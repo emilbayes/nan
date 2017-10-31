@@ -109,7 +109,12 @@ inline Maybe<bool> ForceSet(
   , v8::PropertyAttribute attribs = v8::None) {
   v8::Isolate *isolate = v8::Isolate::GetCurrent();
   v8::HandleScope scope(isolate);
+#if NODE_MODULE_VERSION >= NODE_9_0_MODULE_VERSION
+  return obj->DefineOwnProperty(isolate->GetCurrentContext(),
+                                key.As<v8::Name>(), value, attribs);
+#else
   return obj->ForceSet(isolate->GetCurrentContext(), key, value, attribs);
+#endif
 }
 
 inline MaybeLocal<v8::Value> Get(
